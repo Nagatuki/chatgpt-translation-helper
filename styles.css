@@ -1,0 +1,8 @@
+.translation-toggle.active {
+    background-color: #424242;
+}
+
+.modified-for-translation {
+    display: flex;
+    justify-content: space-between;
+}
