@@ -6,8 +6,9 @@ let debounceTimer = null;
 
 // トグルボタンを作成して右上に追加
 function createToggleButton() {
-    const selector = 'div[class*="@container/thread"] > div > div > div > div[class*="leading-[0]"]';
-    const targetContainer = document.querySelector(selector);
+    const selectorA = 'div[class*="@container/thread"] > div > div > div > div[class*="leading-[0]"]';
+    const selectorB = 'div[class*="@container/thread"] > div > div > div > div > div[class*="leading-[0]"]';
+    const targetContainer = document.querySelector(selectorA) || document.querySelector(selectorB);
     if (!targetContainer) return;
     if (document.getElementById(translationToggleId)) return;
 
