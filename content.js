@@ -4,11 +4,28 @@ const translationTableBodyId = 'translationTableBody';
 
 let debounceTimer = null;
 
+// メインの対話画面が表示されているエレメントを取得する
+function getMainContentsElement() {
+    const mainContentsSelector = 'div[class*="@container/thread"] > div > div > div';
+    return document.querySelector(mainContentsSelector);
+}
+
+// トグルボタンを挿入する場所を取得する
+function getToggleParentElement() {
+    const mainContentsElement = getMainContentsElement();
+    
+    // 通常
+    if (mainContentsElement) {
+        const toggleParentElementSelector = ':scope > div > div[class*="leading-[0]"]';
+        return mainContentsElement.querySelector(toggleParentElementSelector);
+    }
+
+    return null;
+}
+
 // トグルボタンを作成して右上に追加
 function createToggleButton() {
-    const selectorA = 'div[class*="@container/thread"] > div > div > div > div[class*="leading-[0]"]';
-    const selectorB = 'div[class*="@container/thread"] > div > div > div > div > div[class*="leading-[0]"]';
-    const targetContainer = document.querySelector(selectorA) || document.querySelector(selectorB);
+    const targetContainer = getToggleParentElement();
     if (!targetContainer) return;
     if (document.getElementById(translationToggleId)) return;
 
@@ -44,8 +61,8 @@ function createToggleButton() {
 // 結果表示用のテーブルを作成して追加
 function createTable() {
     // ChatGPTのメインコンテナ
-    const chatContainer = document.querySelector('div[class*="@container/thread"] > div > div');
-    if (!chatContainer) return;
+    const mainContentsElement = getMainContentsElement();
+    if (!mainContentsElement) return;
     if (document.getElementById(translationTableId)) return;
 
     // テーブル作成
@@ -64,17 +81,17 @@ function createTable() {
     table.appendChild(tbody);
 
     // メインコンテナに追加
-    chatContainer.appendChild(table);
+    mainContentsElement.appendChild(table);
 }
 
 // 左右分割表示のレイアウト（記事をテーブルに再配置）
 function arrangeChatLayout() {
     // ChatGPTのメインコンテナ取得
-    const chatContainer = document.querySelector('div[class*="@container/thread"] > div > div');
-    if (!chatContainer) return;
+    const mainContentsElement = getMainContentsElement();
+    if (!mainContentsElement) return;
 
     // 既存の記事を非表示にする
-    const articleContainerList = document.querySelectorAll('div[class*="@container/thread"] > div > div > article');
+    const articleContainerList = mainContentsElement.querySelectorAll(':scope > article');
     articleContainerList.forEach(e => e.hidden = true);
 
     // 翻訳表示用テーブルを表示（なければ作成）
@@ -123,11 +140,11 @@ function arrangeChatLayout() {
 
 // 通常表示に戻す（テーブルを非表示、元の記事を表示）
 function resetChatLayout() {
-    const chatContainer = document.querySelector('div[class*="@container/thread"] > div > div');
-    if (!chatContainer) return;
+    const mainContentsElement = getMainContentsElement();
+    if (!mainContentsElement) return;
 
     // 元の記事を再表示
-    const articleContainerList = document.querySelectorAll('div[class*="@container/thread"] > div > div > article');
+    const articleContainerList = mainContentsElement.querySelectorAll(':scope > article');
     articleContainerList.forEach(e => e.hidden = false);
 
     // テーブルが存在すれば非表示にする
